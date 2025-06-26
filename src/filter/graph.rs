@@ -106,6 +106,36 @@ impl Graph {
     pub fn parse(&mut self, spec: &str) -> Result<(), Error> {
         Parser::new(self).parse(spec)
     }
+
+    pub fn send_cmd(
+        &mut self,
+        target: &str,
+        cmd: &str,
+        arg: &str,
+        flags: i32,
+    ) -> Result<(), Error> {
+        let target = CString::new(target).unwrap();
+        let target_ptr = target.as_ptr() as *const i8;
+        let cmd = CString::new(cmd).unwrap();
+        let cmd_ptr = cmd.as_ptr() as *const i8;
+        let arg = CString::new(arg).unwrap();
+        let arg_ptr = arg.as_ptr() as *const i8;
+
+        unsafe {
+            match avfilter_graph_send_command(
+                self.as_mut_ptr(),
+                target_ptr,
+                cmd_ptr,
+                arg_ptr,
+                std::ptr::null_mut(),
+                0,
+                flags,
+            ) {
+                n if n >= 0 => Ok(()),
+                e => Err(Error::from(e)),
+            }
+        }
+    }
 }
 
 impl Drop for Graph {
@@ -150,7 +180,14 @@ impl Parser<'_> {
             if self.inputs.is_null() {
                 self.inputs = input;
             } else {
-                (*self.inputs).next = input;
+                let mut curr = self.inputs;
+                loop {
+                    if (*curr).next.is_null() {
+                        break;
+                    }
+                    curr = (*curr).next;
+                }
+                (*curr).next = input;
             }
         }
 
@@ -176,7 +213,14 @@ impl Parser<'_> {
             if self.outputs.is_null() {
                 self.outputs = output;
             } else {
-                (*self.outputs).next = output;
+                let mut curr = self.outputs;
+                loop {
+                    if (*curr).next.is_null() {
+                        break;
+                    }
+                    curr = (*curr).next;
+                }
+                (*curr).next = output;
             }
         }
 

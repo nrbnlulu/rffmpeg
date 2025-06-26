@@ -1,6 +1,8 @@
 use std::any::Any;
 use std::rc::Rc;
 
+use crate::util::format::Pixel;
+
 use super::{Context, Id};
 use ffi::*;
 use media;
@@ -42,6 +44,10 @@ impl Parameters {
 
     pub fn id(&self) -> Id {
         unsafe { Id::from((*self.as_ptr()).codec_id) }
+    }
+
+    pub fn format(&self) -> Pixel {
+        Pixel::from(unsafe { std::mem::transmute::<_, AVPixelFormat>((*self.as_ptr()).format) })
     }
 }
 

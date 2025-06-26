@@ -18,6 +18,7 @@ pub use self::format::{Input, Output};
 pub mod network;
 
 use std::ffi::{CStr, CString};
+use std::iter::FromIterator;
 use std::path::Path;
 use std::ptr;
 use std::str::from_utf8_unchecked;
@@ -154,6 +155,59 @@ pub fn input<P: AsRef<Path> + ?Sized>(path: &P) -> Result<context::Input, Error>
         let path = from_path(path);
 
         match avformat_open_input(&mut ps, path.as_ptr(), ptr::null_mut(), ptr::null_mut()) {
+            0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
+                r if r >= 0 => Ok(context::Input::wrap(ps)),
+                e => {
+                    avformat_close_input(&mut ps);
+                    Err(Error::from(e))
+                }
+            },
+
+            e => Err(Error::from(e)),
+        }
+    }
+}
+
+pub fn input_with_decoder_format(
+    input_spec: &str,
+    decoder: Option<&str>,
+    format: Option<&str>,
+    opts: Option<&[(String, String)]>,
+) -> Result<context::Input, Error> {
+    unsafe {
+        let mut ps = avformat_alloc_context();
+        if let Some(decoder) = decoder {
+            let decoder = CString::new(decoder).unwrap();
+            let decoder = avcodec_find_decoder_by_name(decoder.as_ptr()) as *mut AVCodec;
+            if decoder as *const _ == ptr::null() {
+                return Err(Error::DecoderNotFound);
+            }
+
+            (*ps).video_codec = decoder;
+            (*ps).video_codec_id = (*decoder).id;
+        }
+
+        let input_format = if let Some(format) = format {
+            let format = CString::new(format).unwrap();
+            av_find_input_format(format.as_ptr())
+        } else {
+            ptr::null_mut()
+        };
+
+        let path = CString::new(input_spec).unwrap();
+
+        let mut opts = if let Some(s) = opts {
+            Dictionary::from_iter(s).disown()
+        } else {
+            ptr::null_mut()
+        };
+
+        let res = avformat_open_input(&mut ps, path.as_ptr(), input_format, &mut opts);
+        if opts != ptr::null_mut() {
+            Dictionary::own(opts);
+        }
+
+        match res {
             0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
                 r if r >= 0 => Ok(context::Input::wrap(ps)),
                 e => {
