@@ -22,7 +22,15 @@ for a better reference on how to build the library.
 #### Windows
 
 1. download the version you want from [ffmpeg-builds](https://github.com/BtbN/FFmpeg-Builds/releases) (only shared builds are supported)
-2. extract and set `FFMPEG_DIR` `FFMPEG_INCLUDE_DIR` and `FFMPEG_LIB_DIR` environment variables to the extracted directory
+2. add these paths (change to fit your needs) to env
+```bash
+export FFMPEG_DIR=/home/dev/Downloads/ffmpeg
+export FFMPEG_PATH=/home/dev/Downloads/ffmpeg/bin
+export FFMPEG_INCLUDE_DIR=/home/dev/Downloads/ffmpeg/include
+export FFMPEG_LIB_DIR=/home/dev/Downloads/ffmpeg/lib
+export LD_LIBRARY_PATH=${FFMPEG_LIB_DIR}:${LD_LIBRARY_PATH}
+```
+
 
 #### Linux
 
