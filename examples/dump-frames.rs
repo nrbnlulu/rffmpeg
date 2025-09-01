@@ -1,4 +1,4 @@
-extern crate ffmpeg_next as ffmpeg;
+extern crate rffmpeg as ffmpeg;
 
 use ffmpeg::format::{input, Pixel};
 use ffmpeg::media::Type;

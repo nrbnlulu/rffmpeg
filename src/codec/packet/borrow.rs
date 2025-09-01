@@ -33,13 +33,13 @@ impl<'a> Borrow<'a> {
     }
 }
 
-impl<'a> Ref for Borrow<'a> {
+impl Ref for Borrow<'_> {
     fn as_ptr(&self) -> *const AVPacket {
         &self.packet
     }
 }
 
-impl<'a> Drop for Borrow<'a> {
+impl Drop for Borrow<'_> {
     fn drop(&mut self) {
         unsafe {
             self.packet.data = ptr::null_mut();

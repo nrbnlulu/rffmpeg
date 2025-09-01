@@ -21,7 +21,7 @@ impl<'a> Stream<'a> {
     }
 }
 
-impl<'a> Stream<'a> {
+impl Stream<'_> {
     pub fn id(&self) -> i32 {
         unsafe { (*self.as_ptr()).id }
     }
@@ -82,20 +82,20 @@ impl<'a> Stream<'a> {
     }
 }
 
-impl<'a> PartialEq for Stream<'a> {
+impl PartialEq for Stream<'_> {
     fn eq(&self, other: &Self) -> bool {
         unsafe { self.as_ptr() == other.as_ptr() }
     }
 }
 
-impl<'a> Eq for Stream<'a> {}
+impl Eq for Stream<'_> {}
 
 pub struct SideDataIter<'a> {
     stream: &'a Stream<'a>,
     current: c_int,
 }
 
-impl<'a> SideDataIter<'a> {
+impl SideDataIter<'_> {
     pub fn new<'sd, 's: 'sd>(stream: &'s Stream) -> SideDataIter<'sd> {
         SideDataIter { stream, current: 0 }
     }
@@ -150,4 +150,4 @@ impl<'a> Iterator for SideDataIter<'a> {
     }
 }
 
-impl<'a> ExactSizeIterator for SideDataIter<'a> {}
+impl ExactSizeIterator for SideDataIter<'_> {}
