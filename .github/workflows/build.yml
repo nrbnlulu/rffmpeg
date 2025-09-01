@@ -46,12 +46,12 @@ jobs:
                   echo "ffmpeg-path=$(pwd)/ffmpeg" >> $GITHUB_OUTPUT
                   echo "FFmpeg directory structure:"
                   find ffmpeg | sort
-                  # Check if lib/amd64 exists for FFmpeg 8.0
-                  if [ "${{ matrix.ffmpeg_version }}" = "8" ] && [ -d "$(pwd)/ffmpeg/lib/amd64" ]; then
-                  echo "Using lib/amd64 directory for FFmpeg 8.0"
-                  echo "PKG_CONFIG_PATH=$(pwd)/ffmpeg/lib/amd64/pkgconfig" >> $GITHUB_ENV
-                  echo "FFMPEG_LIB_DIR=$(pwd)/ffmpeg/lib/amd64" >> $GITHUB_ENV
-                  echo "LD_LIBRARY_PATH=$(pwd)/ffmpeg/lib/amd64:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+                  # Check if lib/arm64 exists for FFmpeg 8.0
+                  if [ "${{ matrix.ffmpeg_version }}" = "8" ] && [ -d "$(pwd)/ffmpeg/lib/arm64" ]; then
+                  echo "Using lib/arm64 directory for FFmpeg 8.0"
+                  echo "PKG_CONFIG_PATH=$(pwd)/ffmpeg/lib/arm64/pkgconfig" >> $GITHUB_ENV
+                  echo "FFMPEG_LIB_DIR=$(pwd)/ffmpeg/lib/arm64" >> $GITHUB_ENV
+                  echo "LD_LIBRARY_PATH=$(pwd)/ffmpeg/lib/arm64:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
                   else
                   echo "Using standard lib directory"
                   echo "PKG_CONFIG_PATH=$(pwd)/ffmpeg/lib/pkgconfig" >> $GITHUB_ENV
