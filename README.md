@@ -4,9 +4,8 @@
 [![docs.rs](https://docs.rs/rffmpeg/badge.svg)](https://docs.rs/rffmpeg)
 [![build](https://github.com/nrbnlulu/rffmpeg/workflows/build/badge.svg)](https://github.com/nrbnlulu/rffmpeg/actions)
 
-currently supports ffmpeg 6.1 - 7.1
+currently supports ffmpeg 6.1 - 8.0
 
-Build instructions can be found on the [wiki](https://github.com/nrbnlulu/rffmpeg/wiki/Notes-on-building).
 
 Documentation:
 
@@ -23,7 +22,6 @@ for a better reference on how to build the library.
 
 1. download the version you want from [ffmpeg-builds](https://github.com/BtbN/FFmpeg-Builds/releases) (only shared builds are supported)
 2. extract and set `FFMPEG_DIR` `FFMPEG_INCLUDE_DIR` and `FFMPEG_LIB_DIR` environment variables to the extracted directory
-
 
 
 #### Linux

@@ -14,12 +14,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - ffmpeg_version: latest(8.0)
-            asset_url: "ffmpeg-master-latest-linux64-gpl-shared.tar.xz"
+          - ffmpeg_version: 8.0
+            asset_url: "https://phoenixnap.dl.sourceforge.net/project/avbuild/linux/ffmpeg-8.0-linux-clang-default.tar.xz?viasf=1"
           - ffmpeg_version: 7.1
-            asset_url: "ffmpeg-n7.1-latest-linux64-gpl-shared-7.1.tar.xz"
+            asset_url: "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-linux64-gpl-shared-7.1.tar.xz"
           - ffmpeg_version: 6.1
-            asset_url: "ffmpeg-n6.1-latest-linux64-gpl-shared-6.1.tar.xz"
+            asset_url: "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n6.1-latest-linux64-gpl-shared-6.1.tar.xz"
 
       fail-fast: false
     steps:
@@ -33,10 +33,9 @@ jobs:
       - name: Install ffmpeg
         id: setup-ffmpeg
         run: |
-          BASE_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
           echo "Downloading FFmpeg version: ${{ matrix.ffmpeg_version }}"
           echo "Downloading asset: ${{ matrix.asset_url }}"
-          curl -L --fail "${BASE_URL}/${{ matrix.asset_url }}" -o ffmpeg.tar.xz
+          curl -L --fail "${{ matrix.asset_url }}" -o ffmpeg.tar.xz
           if [ ! -f ffmpeg.tar.xz ]; then
             echo "FFmpeg download failed"
             exit 1
