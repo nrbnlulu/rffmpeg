@@ -47,7 +47,7 @@ jobs:
                   echo "FFmpeg directory structure:"
                   find ffmpeg | sort
                   # Check if lib/amd64 exists for FFmpeg 8.0
-                  if [ "${{ matrix.ffmpeg_version }}" = "8.0" ] && [ -d "$(pwd)/ffmpeg/lib/amd64" ]; then
+                  if [ "${{ matrix.ffmpeg_version }}" = "8" ] && [ -d "$(pwd)/ffmpeg/lib/amd64" ]; then
                   echo "Using lib/amd64 directory for FFmpeg 8.0"
                   echo "PKG_CONFIG_PATH=$(pwd)/ffmpeg/lib/amd64/pkgconfig" >> $GITHUB_ENV
                   echo "FFMPEG_LIB_DIR=$(pwd)/ffmpeg/lib/amd64" >> $GITHUB_ENV
