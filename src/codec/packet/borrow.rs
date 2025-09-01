@@ -10,8 +10,8 @@ pub struct Borrow<'a> {
     data: &'a [u8],
 }
 
-impl Borrow<'_> {
-    pub fn new(data: &[u8]) -> Borrow {
+impl<'a> Borrow<'a> {
+    pub fn new(data: &[u8]) -> Borrow<'_> {
         unsafe {
             let mut packet: AVPacket = mem::zeroed();
 

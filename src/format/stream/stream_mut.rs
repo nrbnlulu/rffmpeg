@@ -13,8 +13,8 @@ pub struct StreamMut<'a> {
     immutable: Stream<'a>,
 }
 
-impl StreamMut<'_> {
-    pub unsafe fn wrap(context: &mut Context, index: usize) -> StreamMut {
+impl<'a> StreamMut<'a> {
+    pub unsafe fn wrap(context: &mut Context, index: usize) -> StreamMut<'_> {
         StreamMut {
             context: mem::transmute_copy(&context),
             index,

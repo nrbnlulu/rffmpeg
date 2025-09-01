@@ -42,7 +42,7 @@ impl Ref<'_> {
         }
     }
 
-    pub fn iter(&self) -> Iter {
+    pub fn iter(&self) -> Iter<'_> {
         unsafe { Iter::new(self.as_ptr()) }
     }
 

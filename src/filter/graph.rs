@@ -95,11 +95,11 @@ impl Graph {
         }
     }
 
-    pub fn input(&mut self, name: &str, pad: usize) -> Result<Parser, Error> {
+    pub fn input(&mut self, name: &str, pad: usize) -> Result<Parser<'_>, Error> {
         Parser::new(self).input(name, pad)
     }
 
-    pub fn output(&mut self, name: &str, pad: usize) -> Result<Parser, Error> {
+    pub fn output(&mut self, name: &str, pad: usize) -> Result<Parser<'_>, Error> {
         Parser::new(self).output(name, pad)
     }
 
@@ -122,8 +122,8 @@ pub struct Parser<'a> {
     outputs: *mut AVFilterInOut,
 }
 
-impl Parser<'_> {
-    pub fn new(graph: &mut Graph) -> Parser {
+impl<'a> Parser<'a> {
+    pub fn new(graph: &mut Graph) -> Parser<'_> {
         Parser {
             graph,
             inputs: ptr::null_mut(),
