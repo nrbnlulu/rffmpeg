@@ -227,7 +227,7 @@ pub struct SideData<'a> {
     _marker: PhantomData<&'a Frame>,
 }
 
-impl SideData<'_> {
+impl<'a> SideData<'a> {
     #[inline(always)]
     pub unsafe fn wrap(ptr: *mut AVFrameSideData) -> Self {
         SideData {
@@ -247,7 +247,7 @@ impl SideData<'_> {
     }
 }
 
-impl SideData<'_> {
+impl<'a> SideData<'a> {
     #[inline]
     pub fn kind(&self) -> Type {
         unsafe { Type::from((*self.as_ptr()).type_) }
