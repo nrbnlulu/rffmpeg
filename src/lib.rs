@@ -71,6 +71,7 @@ pub use filter::Filter;
 
 pub mod software;
 
+pub mod version;
 fn init_error() {
     util::error::register_all();
 }

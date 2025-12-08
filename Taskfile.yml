@@ -1,0 +1,48 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+    default:
+        cmds:
+            - echo "{{.GREETING}}"
+        silent: true
+
+    lint:
+        desc: "Run clippy linter"
+        cmds:
+            - cargo clippy -- -D warnings
+
+    lint-fix:
+        desc: "Run clippy linter and fix issues"
+        cmds:
+            - cargo clippy --fix --allow-staged
+
+    fmt:
+        desc: "Format code with rustfmt"
+        cmds:
+            - cargo fmt
+
+    fmt-check:
+        desc: "Check code formatting with rustfmt"
+        cmds:
+            - cargo fmt -- --check
+
+    test:
+        desc: "Run all tests (unit, integration, and doc tests)"
+        cmds:
+            - cargo test
+
+    check:
+        desc: "Run all checks (formatting, clippy, and tests)"
+        cmds:
+            - task: fmt-check
+            - task: lint
+            - cargo test
+
+    fix-all:
+        desc: "Format code, fix lint issues, and run tests"
+        cmds:
+            - task: fmt
+            - task: lint-fix
+            - cargo test

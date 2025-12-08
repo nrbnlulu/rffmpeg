@@ -90,6 +90,7 @@ jobs:
             - name: Test
               run: |
                   cargo test --examples
+                  cargo test  # Run all tests including integration tests
             - name: Lint
               run: |
                   cargo clippy --examples -- -D warnings
@@ -117,6 +118,7 @@ jobs:
             - name: Test
               run: |
                   cargo test --examples
+                  cargo test  # Run all tests including integration tests
             - name: Lint
               run: |
                   cargo clippy --examples -- -D warnings
@@ -163,6 +165,7 @@ jobs:
             - name: Test
               run: |
                   cargo test --examples
+                  cargo test  # Run all tests including integration tests
             - name: Lint
               run: |
                   cargo clippy --examples -- -D warnings
