@@ -26,7 +26,7 @@ jobs:
             - name: Install dependencies
               run: |
                   sudo apt update
-                  sudo apt install -y --no-install-recommends clang pkg-config libc++1 libc++abi1 libstdc++6 libxv1
+                  sudo apt install -y --no-install-recommends clang pkg-config libc++1 libc++abi1 libxv1
 
             - name: Install ffmpeg
               id: setup-ffmpeg
