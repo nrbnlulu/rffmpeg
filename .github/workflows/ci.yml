@@ -1,4 +1,4 @@
-name: build
+name: CI 🧪
 on:
     push:
         branches:
@@ -18,8 +18,6 @@ jobs:
                       asset_url: "https://phoenixnap.dl.sourceforge.net/project/avbuild/linux/ffmpeg-8.0-linux-clang-default.tar.xz?viasf=1"
                     - ffmpeg_version: 7.1
                       asset_url: "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-linux64-gpl-shared-7.1.tar.xz"
-                    - ffmpeg_version: 6.1
-                      asset_url: "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n6.1-latest-linux64-gpl-shared-6.1.tar.xz"
 
             fail-fast: false
         steps:
@@ -28,7 +26,7 @@ jobs:
             - name: Install dependencies
               run: |
                   sudo apt update
-                  sudo apt install -y --no-install-recommends clang pkg-config
+                  sudo apt install -y --no-install-recommends clang pkg-config libc++1 libc++abi1 libxv1
 
             - name: Install ffmpeg
               id: setup-ffmpeg
