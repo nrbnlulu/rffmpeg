@@ -14,11 +14,11 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - ffmpeg_version: 8.0
+                    - ffmpeg_version: "8.0"
                       asset_url: "https://phoenixnap.dl.sourceforge.net/project/avbuild/linux/ffmpeg-8.0-linux-clang-default.tar.xz?viasf=1"
                     - ffmpeg_version: 7.1
                       asset_url: "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-linux64-gpl-shared-7.1.tar.xz"
-        
+
             fail-fast: false
         steps:
             - uses: actions/checkout@v4
