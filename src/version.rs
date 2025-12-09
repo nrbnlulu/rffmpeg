@@ -18,12 +18,22 @@ impl fmt::Display for FFmpegVersion {
 #[derive(Debug)]
 pub struct FFmpegVersionsInfo {
     pub avutil: FFmpegVersion,
+    #[cfg(feature = "codec")]
     pub avcodec: FFmpegVersion,
+    #[cfg(feature = "format")]
     pub avformat: FFmpegVersion,
+    #[cfg(feature = "device")]
     pub avdevice: FFmpegVersion,
+    #[cfg(feature = "filter")]
     pub avfilter: FFmpegVersion,
+    #[cfg(feature = "software-scaling")]
     pub swscale: FFmpegVersion,
+    #[cfg(feature = "software-resampling")]
     pub swresample: FFmpegVersion,
+    #[cfg(feature = "resampling")]
+    pub avresample: FFmpegVersion,
+    #[cfg(feature = "postprocessing")]
+    pub postproc: FFmpegVersion,
     pub ffmpeg_version: String,
 }
 
@@ -32,12 +42,22 @@ impl FFmpegVersionsInfo {
         unsafe {
             Self {
                 avutil: Self::decode_version(ffi::avutil_version()),
+                #[cfg(feature = "codec")]
                 avcodec: Self::decode_version(ffi::avcodec_version()),
+                #[cfg(feature = "format")]
                 avformat: Self::decode_version(ffi::avformat_version()),
+                #[cfg(feature = "device")]
                 avdevice: Self::decode_version(ffi::avdevice_version()),
+                #[cfg(feature = "filter")]
                 avfilter: Self::decode_version(ffi::avfilter_version()),
+                #[cfg(feature = "software-scaling")]
                 swscale: Self::decode_version(ffi::swscale_version()),
+                #[cfg(feature = "software-resampling")]
                 swresample: Self::decode_version(ffi::swresample_version()),
+                #[cfg(feature = "resampling")]
+                avresample: Self::decode_version(ffi::avresample_version()),
+                #[cfg(feature = "postprocessing")]
+                postproc: Self::decode_version(ffi::postproc_version()),
                 ffmpeg_version: Self::get_ffmpeg_version_info(),
             }
         }
@@ -67,38 +87,70 @@ impl FFmpegVersionsInfo {
         }
     }
 
-    pub fn print_all(&self) {
-        println!("FFmpeg {} Library Versions:", self.ffmpeg_version);
-        println!("  libavutil:    {}", self.avutil);
-        println!("  libavcodec:   {}", self.avcodec);
-        println!("  libavformat:  {}", self.avformat);
-        println!("  libavdevice:  {}", self.avdevice);
-        println!("  libavfilter:  {}", self.avfilter);
-        println!("  libswscale:   {}", self.swscale);
-        println!("  libswresample: {}", self.swresample);
-    }
-
-    /// Returns true if all library versions are compatible (same major version for core libraries)
+    /// Returns true if all available library versions are compatible (same major version for core libraries)
     pub fn is_consistent(&self) -> bool {
-        // Check if the core libraries have compatible major versions
-        self.avutil.major >= 58 && self.avcodec.major >= 58 && self.avformat.major >= 58
-    }
+        // Check if the core libraries that are available have compatible major versions
+        let mut consistent = self.avutil.major >= 58;
 
-    /// Returns a string representation of all version information (same as Display implementation)
-    pub fn full_string(&self) -> String {
-        format!(
-            "ffmpeg={}, libavutil={}, libavcodec={}, libavformat={}, libavdevice={}, libavfilter={}, libswscale={}, libswresample={}",
-            self.ffmpeg_version, self.avutil, self.avcodec, self.avformat, self.avdevice, self.avfilter, self.swscale, self.swresample
-        )
+        #[cfg(feature = "codec")]
+        {
+            consistent = consistent && self.avcodec.major >= 58;
+        }
+
+        #[cfg(feature = "format")]
+        {
+            consistent = consistent && self.avformat.major >= 58;
+        }
+
+        consistent
     }
 }
 
 impl fmt::Display for FFmpegVersionsInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,
-            "ffmpeg={}, libavutil={}, libavcodec={}, libavformat={}, libavdevice={}, libavfilter={}, libswscale={}, libswresample={}",
-            self.ffmpeg_version, self.avutil, self.avcodec, self.avformat, self.avdevice, self.avfilter, self.swscale, self.swresample
-        )
+        let mut output = format!("ffmpeg={}, libavutil={}", self.ffmpeg_version, self.avutil);
+
+        #[cfg(feature = "codec")]
+        {
+            output.push_str(&format!(", libavcodec={}", self.avcodec));
+        }
+
+        #[cfg(feature = "format")]
+        {
+            output.push_str(&format!(", libavformat={}", self.avformat));
+        }
+
+        #[cfg(feature = "device")]
+        {
+            output.push_str(&format!(", libavdevice={}", self.avdevice));
+        }
+
+        #[cfg(feature = "filter")]
+        {
+            output.push_str(&format!(", libavfilter={}", self.avfilter));
+        }
+
+        #[cfg(feature = "software-scaling")]
+        {
+            output.push_str(&format!(", libswscale={}", self.swscale));
+        }
+
+        #[cfg(feature = "software-resampling")]
+        {
+            output.push_str(&format!(", libswresample={}", self.swresample));
+        }
+
+        #[cfg(feature = "resampling")]
+        {
+            output.push_str(&format!(", libavresample={}", self.avresample));
+        }
+
+        #[cfg(feature = "postprocessing")]
+        {
+            output.push_str(&format!(", libpostproc={}", self.postproc));
+        }
+
+        write!(f, "{}", output)
     }
 }
 

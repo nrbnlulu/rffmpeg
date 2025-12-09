@@ -4,7 +4,6 @@ fn test_version_info() {
 
     // Get version info using the new struct
     let versions = rffmpeg::version::version();
-    versions.print_all();
 
     // Test Display implementation
     println!("\nUsing Display trait: {}", versions);
@@ -19,9 +18,6 @@ fn test_version_info() {
         }
     );
 
-    // Test string representation
-    println!("\nAll versions as string: {}", versions.full_string());
-
     // Access individual library versions
     println!("\nAccessing individual versions:");
     println!("libavutil version: {}", versions.avutil);
@@ -32,8 +28,6 @@ fn test_version_info() {
     let default_versions = rffmpeg::version::FFmpegVersionsInfo::default();
     assert!(default_versions.avutil.major >= 50); // Reasonable minimum version
 
-    // Test Display implementation works the same as full_string
-    assert_eq!(format!("{}", versions), versions.full_string());
 
     // Assertions to validate the test
     assert!(versions.avutil.major >= 50); // Reasonable minimum version
