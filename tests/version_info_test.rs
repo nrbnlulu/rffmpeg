@@ -28,7 +28,6 @@ fn test_version_info() {
     let default_versions = rffmpeg::version::FFmpegVersionsInfo::default();
     assert!(default_versions.avutil.major >= 50); // Reasonable minimum version
 
-
     // Assertions to validate the test
     assert!(versions.avutil.major >= 50); // Reasonable minimum version
     assert!(versions.avcodec.major >= 50); // Reasonable minimum version

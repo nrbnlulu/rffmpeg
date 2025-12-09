@@ -32,8 +32,6 @@ pub struct FFmpegVersionsInfo {
     pub swresample: FFmpegVersion,
     #[cfg(feature = "resampling")]
     pub avresample: FFmpegVersion,
-    #[cfg(feature = "postprocessing")]
-    pub postproc: FFmpegVersion,
     pub ffmpeg_version: String,
 }
 
@@ -56,8 +54,6 @@ impl FFmpegVersionsInfo {
                 swresample: Self::decode_version(ffi::swresample_version()),
                 #[cfg(feature = "resampling")]
                 avresample: Self::decode_version(ffi::avresample_version()),
-                #[cfg(feature = "postprocessing")]
-                postproc: Self::decode_version(ffi::postproc_version()),
                 ffmpeg_version: Self::get_ffmpeg_version_info(),
             }
         }
@@ -145,11 +141,6 @@ impl fmt::Display for FFmpegVersionsInfo {
             output.push_str(&format!(", libavresample={}", self.avresample));
         }
 
-        #[cfg(feature = "postprocessing")]
-        {
-            output.push_str(&format!(", libpostproc={}", self.postproc));
-        }
-
         write!(f, "{}", output)
     }
 }
@@ -167,11 +158,19 @@ pub fn version() -> FFmpegVersionsInfo {
 
 // Access the raw version integers if needed
 pub mod raw {
+    #[cfg(feature = "codec")]
     pub use crate::codec::version as avcodec_version;
+    #[cfg(feature = "device")]
     pub use crate::device::version as avdevice_version;
+    #[cfg(feature = "filter")]
     pub use crate::filter::version as avfilter_version;
+    #[cfg(feature = "format")]
     pub use crate::format::version as avformat_version;
+    #[cfg(feature = "resampling")]
+    pub use crate::software::resampling::version as avresample_version;
+    #[cfg(feature = "software-resampling")]
     pub use crate::software::resampling::version as swresample_version;
+    #[cfg(feature = "software-scaling")]
     pub use crate::software::scaling::version as swscale_version;
     pub use crate::util::version as avutil_version;
 }
