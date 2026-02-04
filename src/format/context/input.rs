@@ -2,6 +2,8 @@ use std::ffi::CString;
 use std::mem;
 use std::ops::{Deref, DerefMut};
 
+use crate::packet::Mut;
+
 use super::common::Context;
 use super::destructor;
 use ffi::*;
@@ -136,6 +138,17 @@ impl Input {
             }
         }
     }
+
+    #[inline]
+    pub fn next_packet(&mut self) -> Result<Packet, Error> {
+        let mut packet = Packet::empty();
+        unsafe {
+            match av_read_frame(self.as_mut_ptr(), packet.as_mut_ptr()) {
+                0 => Ok(packet),
+                e => Err(Error::from(e)),
+            }
+        }
+    }
 }
 
 impl Deref for Input {
@@ -169,7 +182,7 @@ impl<'a> Iterator for PacketIter<'a> {
         let mut packet = Packet::empty();
 
         loop {
-            match packet.read(self.context) {
+            match unsafe { packet.read(self.context) } {
                 Ok(..) => unsafe {
                     return Some((
                         Stream::wrap(mem::transmute_copy(&self.context), packet.stream()),
