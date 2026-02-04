@@ -218,7 +218,7 @@ impl Packet {
     /// # Safety
     /// this is unsafe because you can potentially "read" a packet twice like so:
     /// ```rust,ignore
-    /// let mut packet = Packet::new();
+    /// let mut packet = Packet::empty();
     /// packet.read(&mut ictx)?;
     /// packet.read(&mut ictx)?;
     ///
