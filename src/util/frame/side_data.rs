@@ -72,6 +72,9 @@ pub enum Type {
 
     #[cfg(feature = "ffmpeg_8_0")]
     THREE_D_REFERENCE_DISPLAYS,
+
+    #[cfg(feature = "ffmpeg_8_1")]
+    EXIF,
 }
 
 impl Type {
@@ -148,6 +151,9 @@ impl From<AVFrameSideDataType> for Type {
 
             #[cfg(feature = "ffmpeg_8_0")]
             AV_FRAME_DATA_3D_REFERENCE_DISPLAYS => Type::THREE_D_REFERENCE_DISPLAYS,
+
+            #[cfg(feature = "ffmpeg_8_1")]
+            AV_FRAME_DATA_EXIF => Type::EXIF,
         }
     }
 }
@@ -217,6 +223,9 @@ impl From<Type> for AVFrameSideDataType {
 
             #[cfg(feature = "ffmpeg_8_0")]
             Type::THREE_D_REFERENCE_DISPLAYS => AV_FRAME_DATA_3D_REFERENCE_DISPLAYS,
+
+            #[cfg(feature = "ffmpeg_8_1")]
+            Type::EXIF => AV_FRAME_DATA_EXIF,
         }
     }
 }

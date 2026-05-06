@@ -73,6 +73,9 @@ pub enum Type {
     THREE_D_REFERENCE_DISPLAYS,
     #[cfg(feature = "ffmpeg_8_0")]
     RTCP_SR,
+
+    #[cfg(feature = "ffmpeg_8_1")]
+    EXIF,
 }
 
 impl From<AVPacketSideDataType> for Type {
@@ -144,6 +147,9 @@ impl From<AVPacketSideDataType> for Type {
             AV_PKT_DATA_3D_REFERENCE_DISPLAYS => Type::THREE_D_REFERENCE_DISPLAYS,
             #[cfg(feature = "ffmpeg_8_0")]
             AV_PKT_DATA_RTCP_SR => Type::RTCP_SR,
+
+            #[cfg(feature = "ffmpeg_8_1")]
+            AV_PKT_DATA_EXIF => Type::EXIF,
         }
     }
 }
@@ -217,6 +223,9 @@ impl From<Type> for AVPacketSideDataType {
             Type::THREE_D_REFERENCE_DISPLAYS => AV_PKT_DATA_3D_REFERENCE_DISPLAYS,
             #[cfg(feature = "ffmpeg_8_0")]
             Type::RTCP_SR => AV_PKT_DATA_RTCP_SR,
+
+            #[cfg(feature = "ffmpeg_8_1")]
+            Type::EXIF => AV_PKT_DATA_EXIF,
         }
     }
 }
