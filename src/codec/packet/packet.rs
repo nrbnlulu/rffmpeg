@@ -17,6 +17,11 @@ impl Packet {
     pub unsafe fn is_empty(&self) -> bool {
         self.0.size == 0
     }
+
+    #[inline(always)]
+    fn lacks_payload_and_side_data(&self) -> bool {
+        self.0.size == 0 && self.0.side_data_elems == 0
+    }
 }
 
 impl Packet {
@@ -235,7 +240,9 @@ impl Packet {
     #[inline]
     pub fn write(&self, format: &mut format::context::Output) -> Result<bool, Error> {
         unsafe {
-            if self.is_empty() {
+            // FFmpeg allows zero-size packets that still carry side data, such as
+            // FLAC encoder flush packets with AV_PKT_DATA_NEW_EXTRADATA.
+            if self.lacks_payload_and_side_data() {
                 return Err(Error::InvalidData);
             }
 
@@ -250,7 +257,9 @@ impl Packet {
     #[inline]
     pub fn write_interleaved(&self, format: &mut format::context::Output) -> Result<(), Error> {
         unsafe {
-            if self.is_empty() {
+            // Keep wrapper behavior aligned with av_interleaved_write_frame():
+            // zero-size packets are still valid when they only carry side data.
+            if self.lacks_payload_and_side_data() {
                 return Err(Error::InvalidData);
             }
 
@@ -344,6 +353,32 @@ impl<'a> Iterator for SideDataIter<'a> {
 
             (length - self.cur as usize, Some(length - self.cur as usize))
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Packet;
+    use ffi::av_packet_new_side_data;
+    use ffi::AVPacketSideDataType::AV_PKT_DATA_NEW_EXTRADATA;
+
+    #[test]
+    fn empty_packet_without_side_data_is_still_empty_for_write_checks() {
+        let packet = Packet::empty();
+
+        assert!(unsafe { packet.is_empty() });
+        assert!(packet.lacks_payload_and_side_data());
+    }
+
+    #[test]
+    fn zero_sized_packet_with_side_data_is_not_treated_as_invalid_empty_packet() {
+        let mut packet = Packet::empty();
+        let side_data =
+            unsafe { av_packet_new_side_data(&mut packet.0, AV_PKT_DATA_NEW_EXTRADATA, 1) };
+
+        assert!(!side_data.is_null());
+        assert!(unsafe { packet.is_empty() });
+        assert!(!packet.lacks_payload_and_side_data());
     }
 }
 
